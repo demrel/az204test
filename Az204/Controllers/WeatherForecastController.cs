@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Az204.Controllers
 {
@@ -6,6 +7,7 @@ namespace Az204.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -13,9 +15,10 @@ namespace Az204.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -29,5 +32,14 @@ namespace Az204.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet("/version")]
+        public string GetAppVersion()
+        {
+            return _configuration.GetValue<string>("AppVersion") ?? "1.00a";
+
+        }
+
+
     }
 }
